@@ -38,7 +38,10 @@ export const registrationSchema = z
       .string()
       .min(2, 'City must be at least 2 characters')
       .max(50, 'City must be less than 50 characters'),
-    state: z.enum(stateValues, 'Please select a valid state'),
+    state: z.enum(stateValues, {
+      required_error: 'Please select a state',
+      invalid_type_error: 'Please select a state',
+    }),
 
     primaryAttendee: primaryAttendeeSchema,
 
@@ -48,18 +51,28 @@ export const registrationSchema = z
     ).optional(),
 
     additionalAttendeeCount: z
-      .number()
+      .number({ invalid_type_error: 'Invalid attendee count' })
       .min(0, 'Cannot be negative')
-      .max(10, 'Maximum 10 additional attendees'),
+      .max(10, 'Maximum 10 additional attendees')
+      .default(0),
 
     additionalAttendees: z.array(attendeeSchema).max(10),
 
-    paymentMethod: z.enum(['credit', 'loyalty'], 'Please select a payment method'),
+    paymentMethod: z.enum(['credit', 'loyalty'], {
+      required_error: 'Please select a payment method',
+      invalid_type_error: 'Please select a payment method',
+    }),
 
     // User-facing fields for registration type selection
-    isAlumni: z.boolean({ required_error: 'Please answer if you have attended before' }),
+    isAlumni: z.boolean({
+      required_error: 'Please answer if you have attended before',
+      invalid_type_error: 'Please answer if you have attended before',
+    }),
     isLevelMember: z.boolean().optional(),
-    totalAttendees: z.number({ required_error: 'Please select how many people are attending' }).min(1, 'Please select how many people are attending'),
+    totalAttendees: z.number({
+      required_error: 'Please select how many people are attending',
+      invalid_type_error: 'Please select how many people are attending',
+    }).min(1, 'Please select how many people are attending'),
   })
   .refine(
     (data) => data.additionalAttendees.length === data.additionalAttendeeCount,
