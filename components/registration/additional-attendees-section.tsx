@@ -26,7 +26,7 @@ export function AdditionalAttendeesSection() {
     const currentLength = fields.length
     if (additionalCount > currentLength) {
       for (let i = currentLength; i < additionalCount; i++) {
-        append({ fullName: '' }, { shouldFocus: false, shouldValidate: false })
+        append({ fullName: '' }, { shouldFocus: false })
       }
     } else if (additionalCount < currentLength) {
       for (let i = currentLength - 1; i >= additionalCount; i--) {

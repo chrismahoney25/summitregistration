@@ -32,7 +32,9 @@
       "WebFetch(domain:thisisglance.com)",
       "WebFetch(domain:ux.redhat.com)",
       "WebFetch(domain:cieden.com)",
-      "WebFetch(domain:iamsteve.me)"
+      "WebFetch(domain:iamsteve.me)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
