@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+
+  /* Brand Colors */
+  --color-brand-teal: #3697a4;
+  --color-brand-teal-dark: #2a7580;
+  --color-brand-green: #84bf41;
+  --color-brand-green-dark: #6a9934;
+  --color-brand-pink: #b53a84;
+  --color-brand-pink-dark: #922e6a;
+  --color-brand-yellow: #f2b733;
+  --color-brand-yellow-dark: #d69c1d;
+  --color-brand-orange: #e26b16;
+  --color-brand-orange-dark: #b85512;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-zinc-900 antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-teal text-white px-6 py-3 rounded-lg font-semibold
+           hover:bg-brand-teal-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-brand-teal px-6 py-3 rounded-lg font-semibold
+           border-2 border-zinc-200 hover:border-brand-teal transition-colors;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-lg border-2 border-zinc-200
+           focus:border-brand-teal focus:outline-none transition-colors
+           placeholder:text-zinc-400;
+  }
+
+  .input-error {
+    @apply border-brand-orange focus:border-brand-teal;
+  }
+
+  .error-message {
+    @apply text-brand-orange text-sm mt-1;
+  }
+
+  .section-card {
+    @apply bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-zinc-100;
+  }
+}

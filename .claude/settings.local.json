@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.summitsalon.com)",
+      "WebSearch",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(lsof:*)",
+      "Bash(time curl -s http://localhost:3000/api/summits)",
+      "Bash(grep:*)",
+      "WebFetch(domain:myportal.summitsalon.com)",
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:material.io)",
+      "WebFetch(domain:www.smashingmagazine.com)",
+      "WebFetch(domain:www.w3.org)",
+      "WebFetch(domain:www.nngroup.com)",
+      "WebFetch(domain:design.firefox.com)",
+      "WebFetch(domain:m2.material.io)",
+      "WebFetch(domain:acorn.firefox.com)",
+      "WebFetch(domain:carbon.design)",
+      "WebFetch(domain:www.interaction-design.org)",
+      "WebFetch(domain:m3.material.io)",
+      "WebFetch(domain:fluent2.microsoft.design)",
+      "WebFetch(domain:www.sarasoueidan.com)",
+      "WebFetch(domain:www.conceptfusion.co.uk)",
+      "WebFetch(domain:www.learnui.design)",
+      "WebFetch(domain:thisisglance.com)",
+      "WebFetch(domain:ux.redhat.com)",
+      "WebFetch(domain:cieden.com)",
+      "WebFetch(domain:iamsteve.me)"
+    ]
+  }
+}
