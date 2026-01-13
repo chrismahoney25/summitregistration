@@ -11,7 +11,7 @@ export function AdditionalAttendeesSection() {
     watch,
     register,
     formState: { errors },
-  } = useFormContext<RegistrationFormData & { totalAttendees?: number }>()
+  } = useFormContext<RegistrationFormData>()
 
   const totalAttendees = watch('totalAttendees')
   const additionalCount = watch('additionalAttendeeCount')

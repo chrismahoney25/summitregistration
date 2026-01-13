@@ -42,10 +42,10 @@ export const registrationSchema = z
 
     primaryAttendee: primaryAttendeeSchema,
 
+    // These are derived from user selections, made optional for validation
     registrationType: z.enum(
-      ['non-level-member', 'level-member', 'level-member-solo', 'alumni'],
-      'Please select a registration type'
-    ),
+      ['non-level-member', 'level-member', 'level-member-solo', 'alumni']
+    ).optional(),
 
     additionalAttendeeCount: z
       .number()
@@ -55,12 +55,30 @@ export const registrationSchema = z
     additionalAttendees: z.array(attendeeSchema).max(10),
 
     paymentMethod: z.enum(['credit', 'loyalty'], 'Please select a payment method'),
+
+    // User-facing fields for registration type selection
+    isAlumni: z.boolean({ required_error: 'Please answer if you have attended before' }),
+    isLevelMember: z.boolean().optional(),
+    totalAttendees: z.number({ required_error: 'Please select how many people are attending' }).min(1, 'Please select how many people are attending'),
   })
   .refine(
     (data) => data.additionalAttendees.length === data.additionalAttendeeCount,
     {
       message: 'Please provide names for all additional attendees',
       path: ['additionalAttendees'],
+    }
+  )
+  .refine(
+    (data) => {
+      // If not alumni, must answer level member question
+      if (data.isAlumni === false && data.isLevelMember === undefined) {
+        return false
+      }
+      return true
+    },
+    {
+      message: 'Please answer if you are a LEVEL Loyalty member',
+      path: ['isLevelMember'],
     }
   )
 

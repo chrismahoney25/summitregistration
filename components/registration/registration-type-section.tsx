@@ -17,7 +17,7 @@ export function RegistrationTypeSection() {
     watch,
     setValue,
     formState: { errors },
-  } = useFormContext<RegistrationFormData & { isAlumni?: boolean; isLevelMember?: boolean; totalAttendees?: number }>()
+  } = useFormContext<RegistrationFormData>()
 
   const isAlumni = watch('isAlumni')
   const isLevelMember = watch('isLevelMember')
@@ -93,7 +93,7 @@ export function RegistrationTypeSection() {
           <button
             type="button"
             onClick={() => {
-              setValue('isAlumni', true)
+              setValue('isAlumni', true, { shouldValidate: true })
               setValue('isLevelMember', undefined)
               setValue('totalAttendees', undefined)
             }}
@@ -101,7 +101,9 @@ export function RegistrationTypeSection() {
               'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
               isAlumni === true
                 ? 'border-brand-teal bg-brand-teal text-white'
-                : 'border-zinc-200 hover:border-zinc-400'
+                : errors.isAlumni
+                  ? 'border-brand-orange hover:border-brand-orange'
+                  : 'border-zinc-200 hover:border-zinc-400'
             )}
           >
             Yes
@@ -109,19 +111,24 @@ export function RegistrationTypeSection() {
           <button
             type="button"
             onClick={() => {
-              setValue('isAlumni', false)
+              setValue('isAlumni', false, { shouldValidate: true })
               setValue('totalAttendees', undefined)
             }}
             className={cn(
               'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
               isAlumni === false
                 ? 'border-brand-teal bg-brand-teal text-white'
-                : 'border-zinc-200 hover:border-zinc-400'
+                : errors.isAlumni
+                  ? 'border-brand-orange hover:border-brand-orange'
+                  : 'border-zinc-200 hover:border-zinc-400'
             )}
           >
             No
           </button>
         </div>
+        {errors.isAlumni && (
+          <p className="text-brand-orange text-sm">{errors.isAlumni.message}</p>
+        )}
       </div>
 
       {/* Level Member Question - only show if not alumni */}
@@ -134,14 +141,16 @@ export function RegistrationTypeSection() {
             <button
               type="button"
               onClick={() => {
-                setValue('isLevelMember', true)
+                setValue('isLevelMember', true, { shouldValidate: true })
                 setValue('totalAttendees', undefined)
               }}
               className={cn(
                 'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
                 isLevelMember === true
                   ? 'border-brand-teal bg-brand-teal text-white'
-                  : 'border-zinc-200 hover:border-zinc-400'
+                  : errors.isLevelMember
+                    ? 'border-brand-orange hover:border-brand-orange'
+                    : 'border-zinc-200 hover:border-zinc-400'
               )}
             >
               Yes
@@ -149,19 +158,24 @@ export function RegistrationTypeSection() {
             <button
               type="button"
               onClick={() => {
-                setValue('isLevelMember', false)
+                setValue('isLevelMember', false, { shouldValidate: true })
                 setValue('totalAttendees', undefined)
               }}
               className={cn(
                 'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
                 isLevelMember === false
                   ? 'border-brand-teal bg-brand-teal text-white'
-                  : 'border-zinc-200 hover:border-zinc-400'
+                  : errors.isLevelMember
+                    ? 'border-brand-orange hover:border-brand-orange'
+                    : 'border-zinc-200 hover:border-zinc-400'
               )}
             >
               No
             </button>
           </div>
+          {errors.isLevelMember && (
+            <p className="text-brand-orange text-sm">{errors.isLevelMember.message}</p>
+          )}
         </div>
       )}
 
@@ -173,8 +187,13 @@ export function RegistrationTypeSection() {
           </p>
           <select
             value={totalAttendees || ''}
-            onChange={(e) => setValue('totalAttendees', parseInt(e.target.value, 10))}
-            className="w-full px-4 py-3 rounded-lg border-2 border-zinc-200 focus:border-brand-teal focus:outline-none transition-colors bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.5rem] bg-[right_0.75rem_center] bg-no-repeat pr-10"
+            onChange={(e) => setValue('totalAttendees', parseInt(e.target.value, 10), { shouldValidate: true })}
+            className={cn(
+              "w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-colors bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.5rem] bg-[right_0.75rem_center] bg-no-repeat pr-10",
+              errors.totalAttendees
+                ? 'border-brand-orange focus:border-brand-orange'
+                : 'border-zinc-200 focus:border-brand-teal'
+            )}
           >
             <option value="" disabled>
               Select number of attendees...
@@ -185,11 +204,10 @@ export function RegistrationTypeSection() {
               </option>
             ))}
           </select>
+          {errors.totalAttendees && (
+            <p className="text-brand-orange text-sm">{errors.totalAttendees.message}</p>
+          )}
         </div>
-      )}
-
-      {errors.registrationType && (
-        <p className="text-brand-orange text-sm">{errors.registrationType.message}</p>
       )}
     </div>
   )

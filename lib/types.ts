@@ -37,10 +37,14 @@ export interface RegistrationFormData {
   city: string
   state: string
   primaryAttendee: PrimaryAttendee
-  registrationType: RegistrationType
+  registrationType?: RegistrationType
   additionalAttendeeCount: number
   additionalAttendees: Attendee[]
   paymentMethod: PaymentMethod
+  // User-facing registration type fields
+  isAlumni?: boolean
+  isLevelMember?: boolean
+  totalAttendees?: number
 }
 
 export interface RegistrationTypeOption {

@@ -20,12 +20,6 @@ import { AdditionalAttendeesSection } from './additional-attendees-section'
 import { PaymentMethodSection } from './payment-method-section'
 import { PriceSummary } from './price-summary'
 
-type ExtendedFormData = RegistrationFormData & {
-  isAlumni?: boolean
-  isLevelMember?: boolean
-  totalAttendees?: number
-}
-
 export function RegistrationForm() {
   const searchParams = useSearchParams()
   const summitParam = searchParams.get('summit')
@@ -36,7 +30,7 @@ export function RegistrationForm() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
-  const form = useForm<ExtendedFormData>({
+  const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
       summitId: '',
@@ -82,9 +76,6 @@ export function RegistrationForm() {
     setIsSubmitting(true)
     setSubmitError(null)
 
-    // Get the extended form values
-    const formValues = form.getValues()
-
     // Build summit name from location and date
     const summitName = selectedSummit
       ? `Summit - ${selectedSummit.location} - ${formatDateRange(selectedSummit.startDate)}`
@@ -97,9 +88,6 @@ export function RegistrationForm() {
         body: JSON.stringify({
           ...data,
           summitName,
-          isAlumni: formValues.isAlumni,
-          isLevelMember: formValues.isLevelMember,
-          totalAttendees: formValues.totalAttendees,
           totalPrice: pricing?.total,
         }),
       })
