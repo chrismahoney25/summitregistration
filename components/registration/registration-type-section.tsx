@@ -28,23 +28,23 @@ export function RegistrationTypeSection() {
     const options: AttendeeOption[] = []
 
     if (isAlumni) {
-      // Alumni: starts at 2 for $1,250
-      for (let i = 2; i <= 12; i++) {
+      // Alumni: starts at 2 for $1,250, max 10
+      for (let i = 2; i <= 10; i++) {
         const additionalCount = i - 2
         const price = 1250 + (additionalCount * ADDITIONAL_ATTENDEE_PRICE)
         options.push({ count: i, price, label: `${i} people — ${formatCurrency(price)}` })
       }
     } else if (isLevelMember) {
-      // Level Member: can do solo ($1,450) or 2+ ($1,950 base)
+      // Level Member: can do solo ($1,450) or 2-10 ($1,950 base)
       options.push({ count: 1, price: 1450, label: `Just me — ${formatCurrency(1450)}` })
-      for (let i = 2; i <= 12; i++) {
+      for (let i = 2; i <= 10; i++) {
         const additionalCount = i - 2
         const price = 1950 + (additionalCount * ADDITIONAL_ATTENDEE_PRICE)
         options.push({ count: i, price, label: `${i} people — ${formatCurrency(price)}` })
       }
     } else if (isAlumni === false && isLevelMember === false) {
-      // Non-Level Member: starts at 2 for $2,750
-      for (let i = 2; i <= 12; i++) {
+      // Non-Level Member: starts at 2 for $2,750, max 10
+      for (let i = 2; i <= 10; i++) {
         const additionalCount = i - 2
         const price = 2750 + (additionalCount * ADDITIONAL_ATTENDEE_PRICE)
         options.push({ count: i, price, label: `${i} people — ${formatCurrency(price)}` })

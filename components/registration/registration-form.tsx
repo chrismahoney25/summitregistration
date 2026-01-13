@@ -172,8 +172,8 @@ export function RegistrationForm() {
             )}
 
             <SalonInfoSection />
+            <PrimaryAttendeeSection />
             <RegistrationTypeSection />
-            {totalAttendees && <PrimaryAttendeeSection />}
             {additionalCount > 0 && <AdditionalAttendeesSection />}
             {totalAttendees && <PaymentMethodSection />}
             <PriceSummary pricing={pricing} />
