@@ -8,7 +8,7 @@ import { useSummits } from '@/hooks/use-summits'
 import { usePriceCalculation } from '@/hooks/use-price-calculation'
 import { registrationSchema } from '@/lib/validations'
 import { RegistrationFormData } from '@/lib/types'
-import { formatDateRange } from '@/lib/utils'
+import { formatDateRange, cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { SummitCard } from './summit-card'
@@ -185,11 +185,15 @@ export function RegistrationForm() {
             )}
 
             <Button
-              type="submit"
+              type={!selectedSummitId || !pricing ? 'button' : 'submit'}
               size="lg"
-              className="w-full"
+              className={cn('w-full', (!selectedSummitId || !pricing) && 'opacity-50 cursor-not-allowed')}
               isLoading={isSubmitting}
-              disabled={!selectedSummitId || !pricing}
+              onClick={() => {
+                if (!selectedSummitId || !pricing) {
+                  form.trigger()
+                }
+              }}
             >
               Complete Registration
             </Button>
