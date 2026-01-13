@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
     // Server-side validation
     const validatedData = registrationSchema.parse(body)
 
-    // Get HubSpot tracking cookie
-    const hubspotutk = request.cookies.get('hubspotutk')?.value || ''
+    // Get HubSpot tracking cookie (may not exist if user hasn't visited before)
+    const hubspotutk = request.cookies.get('hubspotutk')?.value
 
     // Format additional attendees as numbered list with newlines
     const additionalAttendeesStr = validatedData.additionalAttendees
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         { name: 'summit_registration_total_amount', value: String(body.totalPrice || 0) },
       ],
       context: {
-        hutk: hubspotutk,
+        ...(hubspotutk && { hutk: hubspotutk }),
         pageUri: request.headers.get('referer') || '',
         pageName: 'Summit Registration',
       },

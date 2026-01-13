@@ -34,7 +34,8 @@
       "WebFetch(domain:cieden.com)",
       "WebFetch(domain:iamsteve.me)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
