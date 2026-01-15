@@ -31,21 +31,9 @@ export type RegistrationType =
 
 export type PaymentMethod = 'credit' | 'loyalty'
 
-export interface RegistrationFormData {
-  summitId: string
-  salonName: string
-  city: string
-  state: string
-  primaryAttendee: PrimaryAttendee
-  registrationType?: RegistrationType
-  additionalAttendeeCount: number
-  additionalAttendees: Attendee[]
-  paymentMethod: PaymentMethod
-  // User-facing registration type fields
-  isAlumni?: boolean
-  isLevelMember?: boolean
-  totalAttendees?: number
-}
+// RegistrationFormData is exported from validations.ts as RegistrationFormSchema
+// Re-export here for backwards compatibility
+export type { RegistrationFormSchema as RegistrationFormData } from './validations'
 
 export interface RegistrationTypeOption {
   id: RegistrationType

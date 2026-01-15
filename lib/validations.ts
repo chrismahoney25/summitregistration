@@ -50,7 +50,7 @@ export const registrationSchema = z
     ).optional(),
 
     additionalAttendeeCount: z
-      .number({ invalid_type_error: 'Invalid attendee count' })
+      .number()
       .min(0, 'Cannot be negative')
       .max(10, 'Maximum 10 additional attendees')
       .default(0),
@@ -62,15 +62,9 @@ export const registrationSchema = z
     }),
 
     // User-facing fields for registration type selection
-    isAlumni: z.union([z.literal(true), z.literal(false)], {
-      error: 'Please answer if you have attended before',
-    }),
-    isLevelMember: z.union([z.literal(true), z.literal(false)], {
-      error: 'Please answer if you are a LEVEL Loyalty member',
-    }).optional(),
-    totalAttendees: z.number({
-      error: 'Please select how many people are attending',
-    }).min(1, 'Please select how many people are attending').optional(),
+    isAlumni: z.boolean().optional(),
+    isLevelMember: z.boolean().optional(),
+    totalAttendees: z.number().min(1, 'Please select how many people are attending').optional(),
   })
   .refine(
     (data) => data.additionalAttendees.length === data.additionalAttendeeCount,

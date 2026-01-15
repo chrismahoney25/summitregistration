@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useSummits } from '@/hooks/use-summits'
 import { usePriceCalculation } from '@/hooks/use-price-calculation'
 import { registrationSchema } from '@/lib/validations'
-import { RegistrationFormData } from '@/lib/types'
+import { z } from 'zod'
 import { formatDateRange, cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -38,7 +38,7 @@ export function RegistrationForm() {
   const [isValidatingSummitParam, setIsValidatingSummitParam] = useState(false)
   const selectorRef = useRef<HTMLDivElement>(null)
 
-  const form = useForm<RegistrationFormData>({
+  const form = useForm({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
       summitId: '',
@@ -62,7 +62,7 @@ export function RegistrationForm() {
   const selectedSummitId = form.watch('summitId')
   const totalAttendees = form.watch('totalAttendees')
 
-  const pricing = usePriceCalculation(registrationType, additionalCount)
+  const pricing = usePriceCalculation(registrationType, additionalCount ?? 0)
   const selectedSummit = summits.find((s) => s.id === selectedSummitId)
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export function RegistrationForm() {
     }, 100)
   }, [])
 
-  const onSubmit = async (data: RegistrationFormData) => {
+  const onSubmit = async (data: z.infer<typeof registrationSchema>) => {
     setIsSubmitting(true)
     setSubmitError(null)
 
@@ -224,7 +224,7 @@ export function RegistrationForm() {
             <SalonInfoSection />
             <RegistrationTypeSection />
             <PrimaryAttendeeSection />
-            {additionalCount > 0 && <AdditionalAttendeesSection />}
+            {(additionalCount ?? 0) > 0 && <AdditionalAttendeesSection />}
             {totalAttendees && <PaymentMethodSection />}
             <PriceSummary pricing={pricing} />
 
