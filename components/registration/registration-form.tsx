@@ -23,7 +23,7 @@ import { PriceSummary } from './price-summary'
 
 export function RegistrationForm() {
   const searchParams = useSearchParams()
-  const summitParam = searchParams.get('summit')
+  const summitParam = searchParams.get('id')
 
   const { summits, isLoading: summitsLoading } = useSummits()
   const [showSummitSelector, setShowSummitSelector] = useState(!summitParam)
