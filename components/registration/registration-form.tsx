@@ -160,6 +160,13 @@ export function RegistrationForm() {
   }
 
   if (submitSuccess) {
+    const summitDate = selectedSummit
+      ? new Date(selectedSummit.startDate).toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        })
+      : ''
+
     return (
       <Card className="text-center py-12">
         <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -178,11 +185,18 @@ export function RegistrationForm() {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Registration Submitted!
+        Congratulations! 
         </h2>
         <p className="text-zinc-600 max-w-md mx-auto">
-          Thank you for registering for The Summit Immersive. You'll receive a
-          confirmation email shortly with next steps.
+          You are preliminarily enrolled in Summit Immersive.
+          We will contact you within 2 business days with payment instructions
+          and enrollment in Summit Online (Class App). You will receive a
+          confirmation once payment is received.
+          {selectedSummit && (
+            <>
+              {' '}We look forward to seeing you in {selectedSummit.location} on {summitDate}!
+            </>
+          )}
         </p>
       </Card>
     )

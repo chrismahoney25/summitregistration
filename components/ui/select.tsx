@@ -8,15 +8,21 @@ interface SelectOption {
   label: string
 }
 
+interface SelectOptionGroup {
+  label: string
+  options: SelectOption[]
+}
+
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
   error?: string
-  options: SelectOption[]
+  options?: SelectOption[]
+  groups?: SelectOptionGroup[]
   placeholder?: string
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, label, error, options, placeholder, id, ...props }, ref) => {
+  ({ className, label, error, options, groups, placeholder, id, ...props }, ref) => {
     const selectId = id || props.name
 
     return (
@@ -49,11 +55,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               {placeholder}
             </option>
           )}
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          {groups
+            ? groups.map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))
+            : options?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
         </select>
         {error && <p className="text-brand-orange text-sm mt-1.5">{error}</p>}
       </div>

@@ -39,7 +39,7 @@ export const registrationSchema = z
       .min(2, 'City must be at least 2 characters')
       .max(50, 'City must be less than 50 characters'),
     state: z.enum(stateValues, {
-      error: 'Please select a state',
+      error: 'Please select a state/province',
     }),
 
     primaryAttendee: primaryAttendeeSchema,

@@ -3,7 +3,7 @@
 import { useFormContext } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
-import { US_STATES } from '@/lib/constants'
+import { STATES_AND_PROVINCES_GROUPED } from '@/lib/constants'
 import { RegistrationFormData } from '@/lib/types'
 
 export function SalonInfoSection() {
@@ -28,9 +28,9 @@ export function SalonInfoSection() {
           {...register('city')}
         />
         <Select
-          label="State"
-          placeholder="Select state"
-          options={US_STATES.map((s) => ({ value: s.value, label: s.label }))}
+          label="State/Province"
+          placeholder="Select state/province"
+          groups={STATES_AND_PROVINCES_GROUPED}
           error={errors.state?.message}
           {...register('state')}
         />

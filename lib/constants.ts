@@ -35,6 +35,7 @@ export const ADDITIONAL_ATTENDEE_PRICE = 500
 export const MAX_ADDITIONAL_ATTENDEES = 10
 
 export const US_STATES = [
+  // US States
   { value: 'AL', label: 'Alabama' },
   { value: 'AK', label: 'Alaska' },
   { value: 'AZ', label: 'Arizona' },
@@ -87,6 +88,32 @@ export const US_STATES = [
   { value: 'WY', label: 'Wyoming' },
   { value: 'DC', label: 'Washington D.C.' },
   { value: 'PR', label: 'Puerto Rico' },
+  // Canadian Provinces
+  { value: 'AB', label: 'Alberta' },
+  { value: 'BC', label: 'British Columbia' },
+  { value: 'MB', label: 'Manitoba' },
+  { value: 'NB', label: 'New Brunswick' },
+  { value: 'NL', label: 'Newfoundland and Labrador' },
+  { value: 'NS', label: 'Nova Scotia' },
+  { value: 'NT', label: 'Northwest Territories' },
+  { value: 'NU', label: 'Nunavut' },
+  { value: 'ON', label: 'Ontario' },
+  { value: 'PE', label: 'Prince Edward Island' },
+  { value: 'QC', label: 'Quebec' },
+  { value: 'SK', label: 'Saskatchewan' },
+  { value: 'YT', label: 'Yukon' },
 ] as const
 
 export type StateCode = (typeof US_STATES)[number]['value']
+
+// Grouped version for Select component with optgroup
+export const STATES_AND_PROVINCES_GROUPED = [
+  {
+    label: 'United States',
+    options: US_STATES.filter((_, i) => i < 52), // US states + DC + PR
+  },
+  {
+    label: 'Canada',
+    options: US_STATES.filter((_, i) => i >= 52), // Canadian provinces
+  },
+]

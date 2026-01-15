@@ -35,7 +35,8 @@
       "WebFetch(domain:iamsteve.me)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(nslookup:*)"
     ]
   }
 }
