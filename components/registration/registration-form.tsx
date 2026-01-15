@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { SummitCard } from './summit-card'
 import { SummitSelector } from './summit-selector'
+import { ExpiredSummitNotice } from './expired-summit-notice'
 import { SalonInfoSection } from './salon-info-section'
 import { PrimaryAttendeeSection } from './primary-attendee-section'
 import { RegistrationTypeSection } from './registration-type-section'
@@ -29,6 +30,13 @@ export function RegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [expiredSummitInfo, setExpiredSummitInfo] = useState<{
+    location: string
+    startDate: string
+  } | null>(null)
+  const [showExpiredNotice, setShowExpiredNotice] = useState(false)
+  const [isValidatingSummitParam, setIsValidatingSummitParam] = useState(false)
+  const selectorRef = useRef<HTMLDivElement>(null)
 
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
@@ -58,19 +66,63 @@ export function RegistrationForm() {
   const selectedSummit = summits.find((s) => s.id === selectedSummitId)
 
   useEffect(() => {
-    if (summitParam && summits.length > 0 && !selectedSummitId) {
+    if (summitParam && summits.length > 0 && !selectedSummitId && !isValidatingSummitParam) {
       const matchingSummit = summits.find((s) => s.id === summitParam)
+
       if (matchingSummit) {
+        // Valid future summit - select it
         form.setValue('summitId', matchingSummit.id)
         setShowSummitSelector(false)
+      } else {
+        // Summit not in available list - check if it exists (may be past/completed)
+        setIsValidatingSummitParam(true)
+
+        fetch(`/api/summits/${summitParam}`)
+          .then((res) => {
+            if (res.status === 404) {
+              return { summit: null }
+            }
+            return res.json()
+          })
+          .then((data) => {
+            if (data.summit) {
+              // Summit exists but is past/completed
+              setExpiredSummitInfo({
+                location: data.summit.location,
+                startDate: data.summit.startDate,
+              })
+            } else {
+              // Summit not found at all
+              setExpiredSummitInfo(null)
+            }
+            setShowExpiredNotice(true)
+            setShowSummitSelector(true)
+          })
+          .catch(() => {
+            // API error - show generic message
+            setExpiredSummitInfo(null)
+            setShowExpiredNotice(true)
+            setShowSummitSelector(true)
+          })
+          .finally(() => {
+            setIsValidatingSummitParam(false)
+          })
       }
     }
-  }, [summitParam, summits, selectedSummitId, form])
+  }, [summitParam, summits, selectedSummitId, form, isValidatingSummitParam])
 
   const handleSummitSelect = (summitId: string) => {
     form.setValue('summitId', summitId, { shouldValidate: true })
     setShowSummitSelector(false)
   }
+
+  const handleExpiredNoticeDismiss = useCallback(() => {
+    setShowExpiredNotice(false)
+    // Scroll to selector
+    setTimeout(() => {
+      selectorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 100)
+  }, [])
 
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true)
@@ -144,20 +196,30 @@ export function RegistrationForm() {
             <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 text-center">Summit Registration</h1>
 
             {/* Summit Selection */}
-            {selectedSummit && !showSummitSelector ? (
-              <SummitCard
-                summit={selectedSummit}
-                onChangeClick={() => setShowSummitSelector(true)}
-                showChangeButton={summits.length > 1}
-              />
-            ) : (
-              <SummitSelector
-                summits={summits}
-                selectedId={selectedSummitId}
-                onSelect={handleSummitSelect}
-                isLoading={summitsLoading}
-              />
-            )}
+            <div ref={selectorRef}>
+              {showExpiredNotice && (
+                <ExpiredSummitNotice
+                  summit={expiredSummitInfo}
+                  onDismiss={handleExpiredNoticeDismiss}
+                />
+              )}
+
+              {selectedSummit && !showSummitSelector ? (
+                <SummitCard
+                  summit={selectedSummit}
+                  onChangeClick={() => setShowSummitSelector(true)}
+                  showChangeButton={summits.length > 1}
+                />
+              ) : (
+                <SummitSelector
+                  summits={summits}
+                  selectedId={selectedSummitId}
+                  onSelect={handleSummitSelect}
+                  isLoading={summitsLoading}
+                  error={form.formState.errors.summitId?.message}
+                />
+              )}
+            </div>
 
             <SalonInfoSection />
             <RegistrationTypeSection />

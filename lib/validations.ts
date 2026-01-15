@@ -39,8 +39,7 @@ export const registrationSchema = z
       .min(2, 'City must be at least 2 characters')
       .max(50, 'City must be less than 50 characters'),
     state: z.enum(stateValues, {
-      required_error: 'Please select a state',
-      invalid_type_error: 'Please select a state',
+      error: 'Please select a state',
     }),
 
     primaryAttendee: primaryAttendeeSchema,
@@ -59,20 +58,19 @@ export const registrationSchema = z
     additionalAttendees: z.array(attendeeSchema).max(10),
 
     paymentMethod: z.enum(['credit', 'loyalty'], {
-      required_error: 'Please select a payment method',
-      invalid_type_error: 'Please select a payment method',
+      error: 'Please select a payment method',
     }),
 
     // User-facing fields for registration type selection
-    isAlumni: z.boolean({
-      required_error: 'Please answer if you have attended before',
-      invalid_type_error: 'Please answer if you have attended before',
+    isAlumni: z.union([z.literal(true), z.literal(false)], {
+      error: 'Please answer if you have attended before',
     }),
-    isLevelMember: z.boolean().optional(),
+    isLevelMember: z.union([z.literal(true), z.literal(false)], {
+      error: 'Please answer if you are a LEVEL Loyalty member',
+    }).optional(),
     totalAttendees: z.number({
-      required_error: 'Please select how many people are attending',
-      invalid_type_error: 'Please select how many people are attending',
-    }).min(1, 'Please select how many people are attending'),
+      error: 'Please select how many people are attending',
+    }).min(1, 'Please select how many people are attending').optional(),
   })
   .refine(
     (data) => data.additionalAttendees.length === data.additionalAttendeeCount,
@@ -83,7 +81,7 @@ export const registrationSchema = z
   )
   .refine(
     (data) => {
-      // If not alumni, must answer level member question
+      // If not alumni, must answer level member question (only when visible)
       if (data.isAlumni === false && data.isLevelMember === undefined) {
         return false
       }
@@ -92,6 +90,21 @@ export const registrationSchema = z
     {
       message: 'Please answer if you are a LEVEL Loyalty member',
       path: ['isLevelMember'],
+    }
+  )
+  .refine(
+    (data) => {
+      // totalAttendees is required only when the field is visible
+      // Visible when: isAlumni is answered AND (isAlumni is true OR isLevelMember is answered)
+      const isVisible = data.isAlumni !== undefined && (data.isAlumni === true || data.isLevelMember !== undefined)
+      if (isVisible && data.totalAttendees === undefined) {
+        return false
+      }
+      return true
+    },
+    {
+      message: 'Please select how many people are attending',
+      path: ['totalAttendees'],
     }
   )
 
