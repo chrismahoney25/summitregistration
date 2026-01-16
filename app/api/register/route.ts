@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         { name: 'lastname', value: validatedData.primaryAttendee.lastName },
         { name: 'email', value: validatedData.primaryAttendee.email },
         { name: 'summit_registration_additional_attendees', value: additionalAttendeesStr },
-        { name: 'summit_registration_payment_method', value: paymentMethodMap[validatedData.paymentMethod] || validatedData.paymentMethod },
+        { name: 'summit_registration_payment_method', value: validatedData.paymentMethod ? (paymentMethodMap[validatedData.paymentMethod] || validatedData.paymentMethod) : '' },
         { name: 'summit_registration_total_amount', value: String(body.totalPrice || 0) },
       ],
       context: {

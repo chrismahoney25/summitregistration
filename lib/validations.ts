@@ -57,9 +57,7 @@ export const registrationSchema = z
 
     additionalAttendees: z.array(attendeeSchema).max(10),
 
-    paymentMethod: z.enum(['credit', 'loyalty', 'combo'], {
-      error: 'Please select a payment method',
-    }),
+    paymentMethod: z.enum(['credit', 'loyalty', 'combo']).optional(),
 
     // User-facing fields for registration type selection
     isAlumni: z.boolean().optional(),
@@ -71,34 +69,6 @@ export const registrationSchema = z
     {
       message: 'Please provide names for all additional attendees',
       path: ['additionalAttendees'],
-    }
-  )
-  .refine(
-    (data) => {
-      // If not alumni, must answer level member question (only when visible)
-      if (data.isAlumni === false && data.isLevelMember === undefined) {
-        return false
-      }
-      return true
-    },
-    {
-      message: 'Please answer if you are a LEVEL Loyalty member',
-      path: ['isLevelMember'],
-    }
-  )
-  .refine(
-    (data) => {
-      // totalAttendees is required only when the field is visible
-      // Visible when: isAlumni is answered AND (isAlumni is true OR isLevelMember is answered)
-      const isVisible = data.isAlumni !== undefined && (data.isAlumni === true || data.isLevelMember !== undefined)
-      if (isVisible && data.totalAttendees === undefined) {
-        return false
-      }
-      return true
-    },
-    {
-      message: 'Please select how many people are attending',
-      path: ['totalAttendees'],
     }
   )
 

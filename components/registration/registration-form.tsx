@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSummits } from '@/hooks/use-summits'
 import { usePriceCalculation } from '@/hooks/use-price-calculation'
-import { registrationSchema } from '@/lib/validations'
+import { registrationSchema, RegistrationFormSchema } from '@/lib/validations'
 import { z } from 'zod'
 import { formatDateRange, cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
@@ -125,6 +125,55 @@ export function RegistrationForm() {
     }, 100)
   }, [])
 
+  // Manual validation for conditional fields (bypasses Zod superRefine issues)
+  const validateConditionalFields = useCallback((): boolean => {
+    let isValid = true
+    const values = form.getValues()
+
+    // Clear previous manual errors first
+    form.clearErrors(['isAlumni', 'isLevelMember', 'totalAttendees', 'paymentMethod'])
+
+    // 1. isAlumni is always required
+    if (values.isAlumni === undefined) {
+      form.setError('isAlumni', {
+        type: 'manual',
+        message: 'Please indicate if you have attended a Summit before',
+      })
+      isValid = false
+    }
+
+    // 2. isLevelMember required when isAlumni === false
+    if (values.isAlumni === false && values.isLevelMember === undefined) {
+      form.setError('isLevelMember', {
+        type: 'manual',
+        message: 'Please answer if you are a LEVEL Loyalty member',
+      })
+      isValid = false
+    }
+
+    // 3. totalAttendees required when visible
+    const showAttendees = values.isAlumni !== undefined &&
+      (values.isAlumni === true || values.isLevelMember !== undefined)
+    if (showAttendees && values.totalAttendees === undefined) {
+      form.setError('totalAttendees', {
+        type: 'manual',
+        message: 'Please select how many people are attending',
+      })
+      isValid = false
+    }
+
+    // 4. paymentMethod required when totalAttendees is set
+    if (values.totalAttendees !== undefined && values.paymentMethod === undefined) {
+      form.setError('paymentMethod', {
+        type: 'manual',
+        message: 'Please select a payment method',
+      })
+      isValid = false
+    }
+
+    return isValid
+  }, [form])
+
   const onSubmit = async (data: z.infer<typeof registrationSchema>) => {
     setIsSubmitting(true)
     setSubmitError(null)
@@ -158,6 +207,39 @@ export function RegistrationForm() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Fields that Zod validates (non-conditional)
+  const zodValidatedFields: FieldPath<RegistrationFormSchema>[] = [
+    'summitId',
+    'salonName',
+    'city',
+    'state',
+    'primaryAttendee.firstName',
+    'primaryAttendee.lastName',
+    'primaryAttendee.email',
+    'additionalAttendees',
+  ]
+
+  // Wrapper that runs Zod validation first, then manual validation for conditional fields
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Trigger Zod validation ONLY for standard fields (excludes conditional fields)
+    // This prevents Zod from clearing our manually-set errors on conditional fields
+    const standardFieldsValid = await form.trigger(zodValidatedFields)
+
+    // Run manual validation for conditional fields AFTER Zod validation
+    // so our errors don't get cleared by the resolver
+    const conditionalFieldsValid = validateConditionalFields()
+
+    if (!standardFieldsValid || !conditionalFieldsValid) {
+      return // Errors are already set on the form
+    }
+
+    // Proceed with submission
+    const data = form.getValues()
+    await onSubmit(data as z.infer<typeof registrationSchema>)
   }
 
   if (submitSuccess) {
@@ -205,7 +287,7 @@ export function RegistrationForm() {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} style={{ overflowAnchor: 'none' }}>
+      <form onSubmit={handleFormSubmit} style={{ overflowAnchor: 'none' }}>
         <Card>
           <div className="space-y-8">
             <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 text-center">Summit Registration</h1>
@@ -254,9 +336,11 @@ export function RegistrationForm() {
               size="lg"
               className={cn('w-full', (!selectedSummitId || !pricing) && 'opacity-50 cursor-not-allowed')}
               isLoading={isSubmitting}
-              onClick={() => {
+              onClick={async () => {
                 if (!selectedSummitId || !pricing) {
-                  form.trigger()
+                  // Trigger only standard fields, then validate conditional fields
+                  await form.trigger(zodValidatedFields)
+                  validateConditionalFields()
                 }
               }}
             >
