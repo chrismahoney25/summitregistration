@@ -36,12 +36,12 @@ export function RegistrationTypeSection() {
         options.push({ count: i, price, label: `${i} people — ${formatCurrency(price)}` })
       }
     } else if (isLevelMember) {
-      // Level Member: can do solo ($1,450) or 2-10 ($1,950 base)
-      options.push({ count: 1, price: 1450, label: `Just me — ${formatCurrency(1450)}` })
-      for (let i = 2; i <= 10; i++) {
-        const additionalCount = i - 2
-        const price = 1950 + (additionalCount * ADDITIONAL_ATTENDEE_PRICE)
-        options.push({ count: i, price, label: `${i} people — ${formatCurrency(price)}` })
+      // Level Member: $1,450 base + $500 per additional person
+      for (let i = 1; i <= 10; i++) {
+        const additionalCount = i - 1
+        const price = 1450 + (additionalCount * ADDITIONAL_ATTENDEE_PRICE)
+        const label = i === 1 ? `Just me — ${formatCurrency(price)}` : `${i} people — ${formatCurrency(price)}`
+        options.push({ count: i, price, label })
       }
     } else if (isAlumni === false && isLevelMember === false) {
       // Non-Level Member: starts at 2 for $2,750, max 10
@@ -79,8 +79,8 @@ export function RegistrationTypeSection() {
     }
 
     if (regType) {
-      // Calculate actual additional attendees for pricing (beyond included in base package)
-      const actualAdditionalCount = Math.max(0, totalAttendees - includedAttendees)
+      // Calculate additional attendee form fields (everyone except the primary registrant)
+      const actualAdditionalCount = Math.max(0, totalAttendees - 1)
 
       setValue('registrationType', regType, { shouldValidate: true })
       setValue('additionalAttendeeCount', actualAdditionalCount, { shouldValidate: true })
@@ -164,7 +164,7 @@ export function RegistrationTypeSection() {
                   onClick={() => {
                     if (field.value === true) return // Already selected, don't reset
                     field.onChange(true)
-                    setValue('totalAttendees', undefined)
+                    setValue('totalAttendees', 2) // Default to 2 people for level members
                     clearErrors('isLevelMember')
                   }}
                   className={cn(
