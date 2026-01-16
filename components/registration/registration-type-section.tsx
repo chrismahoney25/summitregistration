@@ -60,24 +60,30 @@ export function RegistrationTypeSection() {
     if (totalAttendees === undefined) return
 
     let regType: RegistrationType | undefined
-    // Collect names for everyone except the primary attendee
-    const additionalNamesNeeded = Math.max(0, totalAttendees - 1)
+    let includedAttendees = 2 // Default for most types
 
     if (isAlumni) {
       regType = 'alumni'
+      includedAttendees = 2
     } else if (isLevelMember) {
       if (totalAttendees === 1) {
         regType = 'level-member-solo'
+        includedAttendees = 1
       } else {
         regType = 'level-member'
+        includedAttendees = 2
       }
     } else if (isAlumni === false && isLevelMember === false) {
       regType = 'non-level-member'
+      includedAttendees = 2
     }
 
     if (regType) {
+      // Calculate actual additional attendees for pricing (beyond included in base package)
+      const actualAdditionalCount = Math.max(0, totalAttendees - includedAttendees)
+
       setValue('registrationType', regType, { shouldValidate: true })
-      setValue('additionalAttendeeCount', additionalNamesNeeded, { shouldValidate: true })
+      setValue('additionalAttendeeCount', actualAdditionalCount, { shouldValidate: true })
     }
   }, [totalAttendees, isAlumni, isLevelMember, setValue])
 
@@ -90,7 +96,7 @@ export function RegistrationTypeSection() {
         name="isAlumni"
         control={control}
         render={({ field, fieldState: { error } }) => (
-          <div className="space-y-3">
+          <div className="space-y-3" data-field="isAlumni">
             <p className="text-sm font-medium text-zinc-700">
               Have you attended The Summit before?
             </p>
@@ -148,7 +154,7 @@ export function RegistrationTypeSection() {
           name="isLevelMember"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <div className="space-y-3">
+            <div className="space-y-3" data-field="isLevelMember">
               <p className="text-sm font-medium text-zinc-700">
                 Are you a LEVEL Loyalty member?
               </p>
@@ -206,7 +212,7 @@ export function RegistrationTypeSection() {
           name="totalAttendees"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <div className="space-y-3">
+            <div className="space-y-3" data-field="totalAttendees">
               <p className="text-sm font-medium text-zinc-700">
                 How many people are attending?
               </p>

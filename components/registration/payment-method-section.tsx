@@ -66,7 +66,7 @@ export function PaymentMethodSection() {
         const selectedOptions = getSelectedFromValue(currentValue)
 
         return (
-          <div className="space-y-4">
+          <div className="space-y-4" data-field="paymentMethod">
             <div>
               <h3 className="text-lg font-semibold text-zinc-900">Payment Method</h3>
               <p className="text-sm text-zinc-500">Select both if paying with a combination of credit card and Level points</p>

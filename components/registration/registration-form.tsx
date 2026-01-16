@@ -125,6 +125,87 @@ export function RegistrationForm() {
     }, 100)
   }, [])
 
+  // Field order for scroll-to-first-error (matches form layout)
+  const fieldOrder = [
+    'summitId',
+    'salonName',
+    'city',
+    'state',
+    'isAlumni',
+    'isLevelMember',
+    'totalAttendees',
+    'primaryAttendee.firstName',
+    'primaryAttendee.lastName',
+    'primaryAttendee.email',
+    'additionalAttendees',
+    'paymentMethod',
+  ]
+
+  // Scroll to the first field with an error
+  const scrollToFirstError = useCallback(() => {
+    const errors = form.formState.errors
+
+    for (const fieldName of fieldOrder) {
+      // Special handling for additionalAttendees array
+      if (fieldName === 'additionalAttendees') {
+        const attendeeErrors = errors.additionalAttendees
+        if (Array.isArray(attendeeErrors)) {
+          // Find the first attendee with an error
+          const firstErrorIndex = attendeeErrors.findIndex(err => err?.fullName)
+          if (firstErrorIndex !== -1) {
+            const element = document.querySelector(
+              `[name="additionalAttendees.${firstErrorIndex}.fullName"]`
+            )
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              if (element instanceof HTMLElement && 'focus' in element) {
+                setTimeout(() => (element as HTMLElement).focus(), 300)
+              }
+              return
+            }
+            // Fallback to section wrapper
+            const sectionElement = document.querySelector(`[data-field="additionalAttendees"]`)
+            if (sectionElement) {
+              sectionElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              return
+            }
+          }
+        }
+        continue
+      }
+
+      // Check if this field has an error (handle nested paths like primaryAttendee.firstName)
+      const hasError = fieldName.includes('.')
+        ? fieldName.split('.').reduce((obj: Record<string, unknown> | undefined, key) => 
+            obj?.[key] as Record<string, unknown> | undefined, errors as unknown as Record<string, unknown>)
+        : errors[fieldName as keyof typeof errors]
+
+      if (hasError) {
+        // Try to find the element by name attribute first (inputs/selects)
+        let element = document.querySelector(`[name="${fieldName}"]`)
+        
+        // For button groups and special fields, use data-field attribute
+        if (!element) {
+          element = document.querySelector(`[data-field="${fieldName}"]`)
+        }
+        
+        // For summit selector, use the ref
+        if (!element && fieldName === 'summitId') {
+          element = selectorRef.current
+        }
+
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // Focus the element if it's focusable
+          if (element instanceof HTMLElement && 'focus' in element) {
+            setTimeout(() => (element as HTMLElement).focus(), 300)
+          }
+          break
+        }
+      }
+    }
+  }, [form.formState.errors])
+
   // Manual validation for conditional fields (bypasses Zod superRefine issues)
   const validateConditionalFields = useCallback((): boolean => {
     let isValid = true
@@ -234,7 +315,9 @@ export function RegistrationForm() {
     const conditionalFieldsValid = validateConditionalFields()
 
     if (!standardFieldsValid || !conditionalFieldsValid) {
-      return // Errors are already set on the form
+      // Scroll to first error after a brief delay to let errors render
+      setTimeout(() => scrollToFirstError(), 100)
+      return
     }
 
     // Proceed with submission
@@ -344,6 +427,8 @@ export function RegistrationForm() {
                   // Trigger only standard fields, then validate conditional fields
                   await form.trigger(zodValidatedFields)
                   validateConditionalFields()
+                  // Scroll to first error after a brief delay to let errors render
+                  setTimeout(() => scrollToFirstError(), 100)
                 }
               }}
             >

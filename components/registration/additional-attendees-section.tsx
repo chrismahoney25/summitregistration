@@ -41,7 +41,7 @@ export function AdditionalAttendeesSection() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-field="additionalAttendees">
       <div>
         <h3 className="text-lg font-semibold text-zinc-900">
           Other Attendees
