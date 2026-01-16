@@ -304,7 +304,10 @@ export function RegistrationForm() {
               {selectedSummit && !showSummitSelector ? (
                 <SummitCard
                   summit={selectedSummit}
-                  onChangeClick={() => setShowSummitSelector(true)}
+                  onChangeClick={() => {
+                    form.setValue('summitId', '')
+                    setShowSummitSelector(true)
+                  }}
                   showChangeButton={summits.length > 1}
                 />
               ) : (

@@ -17,6 +17,7 @@ export function RegistrationTypeSection() {
     watch,
     setValue,
     control,
+    clearErrors,
   } = useFormContext<RegistrationFormData>()
 
   const isAlumni = watch('isAlumni')
@@ -97,9 +98,11 @@ export function RegistrationTypeSection() {
               <button
                 type="button"
                 onClick={() => {
+                  if (field.value === true) return // Already selected, don't reset
                   field.onChange(true)
                   setValue('isLevelMember', undefined)
                   setValue('totalAttendees', undefined)
+                  clearErrors('isAlumni')
                 }}
                 className={cn(
                   'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
@@ -115,8 +118,10 @@ export function RegistrationTypeSection() {
               <button
                 type="button"
                 onClick={() => {
+                  if (field.value === false) return // Already selected, don't reset
                   field.onChange(false)
                   setValue('totalAttendees', undefined)
+                  clearErrors('isAlumni')
                 }}
                 className={cn(
                   'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
@@ -151,8 +156,10 @@ export function RegistrationTypeSection() {
                 <button
                   type="button"
                   onClick={() => {
+                    if (field.value === true) return // Already selected, don't reset
                     field.onChange(true)
                     setValue('totalAttendees', undefined)
+                    clearErrors('isLevelMember')
                   }}
                   className={cn(
                     'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
@@ -168,8 +175,10 @@ export function RegistrationTypeSection() {
                 <button
                   type="button"
                   onClick={() => {
+                    if (field.value === false) return // Already selected, don't reset
                     field.onChange(false)
                     setValue('totalAttendees', undefined)
+                    clearErrors('isLevelMember')
                   }}
                   className={cn(
                     'flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all',
@@ -203,7 +212,10 @@ export function RegistrationTypeSection() {
               </p>
               <select
                 value={field.value || ''}
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                onChange={(e) => {
+                  field.onChange(parseInt(e.target.value, 10))
+                  clearErrors('totalAttendees')
+                }}
                 className={cn(
                   "w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-colors bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.5rem] bg-[right_0.75rem_center] bg-no-repeat pr-10",
                   error

@@ -34,13 +34,10 @@ function getValueFromSelected(selected: Set<'credit' | 'loyalty'>): PaymentMetho
 }
 
 export function PaymentMethodSection() {
-  const { control } = useFormContext<RegistrationFormData>()
+  const { control, clearErrors, setValue, watch } = useFormContext<RegistrationFormData>()
+  const currentValue = watch('paymentMethod')
 
-  const handleToggle = (
-    optionId: 'credit' | 'loyalty',
-    currentValue: PaymentMethod | undefined,
-    onChange: (value: PaymentMethod | undefined) => void
-  ) => {
+  const handleToggle = (optionId: 'credit' | 'loyalty') => {
     const currentSelected = getSelectedFromValue(currentValue)
     const next = new Set(currentSelected)
 
@@ -50,16 +47,23 @@ export function PaymentMethodSection() {
       next.add(optionId)
     }
 
-    onChange(getValueFromSelected(next))
+    const newValue = getValueFromSelected(next)
+    // Use setValue instead of field.onChange for more reliable undefined handling
+    setValue('paymentMethod', newValue, { shouldDirty: true })
+    
+    // Clear error when a valid payment method is selected
+    if (newValue !== undefined) {
+      clearErrors('paymentMethod')
+    }
   }
 
   return (
     <Controller
       name="paymentMethod"
       control={control}
-      render={({ field, fieldState: { error } }) => {
+      render={({ fieldState: { error } }) => {
         // Derive selected state from form value (single source of truth)
-        const selectedOptions = getSelectedFromValue(field.value)
+        const selectedOptions = getSelectedFromValue(currentValue)
 
         return (
           <div className="space-y-4">
@@ -75,7 +79,7 @@ export function PaymentMethodSection() {
                 <button
                   key={option.id}
                   type="button"
-                  onClick={() => handleToggle(option.id, field.value, field.onChange)}
+                  onClick={() => handleToggle(option.id)}
                   className={cn(
                     'text-left p-4 rounded-xl border-2 transition-all',
                     selectedOptions.has(option.id)
