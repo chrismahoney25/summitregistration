@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     const paymentMethodMap: Record<string, string> = {
       credit: 'credit_card',
       loyalty: 'level',
+      combo: 'combo',
     }
 
     // Transform data to HubSpot Forms API format

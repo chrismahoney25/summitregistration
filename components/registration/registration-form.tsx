@@ -61,6 +61,7 @@ export function RegistrationForm() {
   const additionalCount = form.watch('additionalAttendeeCount')
   const selectedSummitId = form.watch('summitId')
   const totalAttendees = form.watch('totalAttendees')
+  const paymentMethod = form.watch('paymentMethod')
 
   const pricing = usePriceCalculation(registrationType, additionalCount ?? 0)
   const selectedSummit = summits.find((s) => s.id === selectedSummitId)
@@ -240,7 +241,7 @@ export function RegistrationForm() {
             <PrimaryAttendeeSection />
             {(additionalCount ?? 0) > 0 && <AdditionalAttendeesSection />}
             {totalAttendees && <PaymentMethodSection />}
-            <PriceSummary pricing={pricing} />
+            <PriceSummary pricing={pricing} paymentMethod={paymentMethod} />
 
             {submitError && (
               <div className="bg-brand-orange/10 border border-brand-orange/30 rounded-xl p-4">

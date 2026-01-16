@@ -14,16 +14,16 @@ export function formatCurrency(amount: number): string {
 }
 
 export function formatDateRange(startDate: string): string {
-  const start = new Date(startDate)
-  const end = new Date(start)
-  end.setDate(end.getDate() + 1)
+  // Parse as local date to avoid timezone shift
+  const [year, month, day] = startDate.split('-').map(Number)
+  const start = new Date(year, month - 1, day)
+  const end = new Date(year, month - 1, day + 1)
 
   const startDay = start.getDate()
   const endDay = end.getDate()
-  const month = start.toLocaleDateString('en-US', { month: 'long' })
-  const year = start.getFullYear()
+  const monthName = start.toLocaleDateString('en-US', { month: 'long' })
 
-  return `${month} ${startDay}-${endDay}, ${year}`
+  return `${monthName} ${startDay}-${endDay}, ${year}`
 }
 
 export function formatSummitDisplay(startDate: string, location: string): string {

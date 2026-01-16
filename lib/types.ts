@@ -29,7 +29,7 @@ export type RegistrationType =
   | 'level-member-solo'
   | 'alumni'
 
-export type PaymentMethod = 'credit' | 'loyalty'
+export type PaymentMethod = 'credit' | 'loyalty' | 'combo'
 
 // RegistrationFormData is exported from validations.ts as RegistrationFormSchema
 // Re-export here for backwards compatibility

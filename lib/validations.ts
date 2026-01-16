@@ -57,7 +57,7 @@ export const registrationSchema = z
 
     additionalAttendees: z.array(attendeeSchema).max(10),
 
-    paymentMethod: z.enum(['credit', 'loyalty'], {
+    paymentMethod: z.enum(['credit', 'loyalty', 'combo'], {
       error: 'Please select a payment method',
     }),
 

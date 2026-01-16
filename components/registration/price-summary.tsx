@@ -1,14 +1,21 @@
 'use client'
 
-import { PriceCalculation } from '@/lib/types'
+import { PriceCalculation, PaymentMethod } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 import { ADDITIONAL_ATTENDEE_PRICE } from '@/lib/constants'
 
 interface PriceSummaryProps {
   pricing: PriceCalculation | null
+  paymentMethod?: PaymentMethod
 }
 
-export function PriceSummary({ pricing }: PriceSummaryProps) {
+const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  credit: 'Credit Card',
+  loyalty: 'Level Loyalty Points',
+  combo: 'Credit Card + Level Points',
+}
+
+export function PriceSummary({ pricing, paymentMethod }: PriceSummaryProps) {
   if (!pricing) {
     return null
   }
@@ -41,6 +48,14 @@ export function PriceSummary({ pricing }: PriceSummaryProps) {
             <span>{formatCurrency(pricing.total)}</span>
           </div>
         </div>
+        {paymentMethod && (
+          <div className="border-t border-zinc-700 pt-3 mt-3">
+            <div className="flex justify-between">
+              <span className="text-zinc-300">Payment Method</span>
+              <span className="font-medium">{PAYMENT_METHOD_LABELS[paymentMethod]}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
