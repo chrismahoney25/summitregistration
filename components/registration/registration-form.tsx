@@ -9,6 +9,7 @@ import { usePriceCalculation } from '@/hooks/use-price-calculation'
 import { registrationSchema, RegistrationFormSchema } from '@/lib/validations'
 import { z } from 'zod'
 import { formatDateRange, cn } from '@/lib/utils'
+import { isCanadianProvince } from '@/lib/constants'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { SummitCard } from './summit-card'
@@ -226,9 +227,12 @@ export function RegistrationForm() {
 
     // 2. isLevelMember required when isAlumni === false
     if (values.isAlumni === false && values.isLevelMember === undefined) {
+      const isCanadian = isCanadianProvince(values.state || '')
       form.setError('isLevelMember', {
         type: 'manual',
-        message: 'Please answer if you are a LEVEL Loyalty member',
+        message: isCanadian
+          ? "Please indicate if you are a member of a L'Oréal loyalty program"
+          : 'Please answer if you are a LEVEL Loyalty member',
       })
       isValid = false
     }
@@ -328,10 +332,13 @@ export function RegistrationForm() {
 
   if (submitSuccess) {
     const summitDate = selectedSummit
-      ? new Date(selectedSummit.startDate).toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-        })
+      ? (() => {
+          const [year, month, day] = selectedSummit.startDate.split('-').map(Number)
+          return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+          })
+        })()
       : ''
 
     return (

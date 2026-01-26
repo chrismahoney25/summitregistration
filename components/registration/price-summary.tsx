@@ -1,21 +1,29 @@
 'use client'
 
+import { useFormContext } from 'react-hook-form'
 import { PriceCalculation, PaymentMethod } from '@/lib/types'
+import { RegistrationFormData } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
-import { ADDITIONAL_ATTENDEE_PRICE } from '@/lib/constants'
+import { ADDITIONAL_ATTENDEE_PRICE, isCanadianProvince } from '@/lib/constants'
 
 interface PriceSummaryProps {
   pricing: PriceCalculation | null
   paymentMethod?: PaymentMethod
 }
 
-const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
-  credit: 'Credit Card',
-  loyalty: 'Level Loyalty Points',
-  combo: 'Credit Card + Level Points',
+function getPaymentMethodLabels(isCanadian: boolean): Record<PaymentMethod, string> {
+  return {
+    credit: 'Credit Card',
+    loyalty: isCanadian ? "L'Oréal Loyalty Points" : 'Level Loyalty Points',
+    combo: isCanadian ? "Credit Card + L'Oréal Loyalty Points" : 'Credit Card + Level Points',
+  }
 }
 
 export function PriceSummary({ pricing, paymentMethod }: PriceSummaryProps) {
+  const { watch } = useFormContext<RegistrationFormData>()
+  const state = watch('state')
+  const isCanadian = isCanadianProvince(state || '')
+  const paymentMethodLabels = getPaymentMethodLabels(isCanadian)
   if (!pricing) {
     return null
   }
@@ -26,7 +34,7 @@ export function PriceSummary({ pricing, paymentMethod }: PriceSummaryProps) {
       <div className="space-y-3">
         <div className="flex justify-between">
           <span className="text-zinc-300">
-            {pricing.registrationTypeName} ({pricing.baseAttendees}{' '}
+            {isCanadian ? pricing.registrationTypeName.replace(/Level/g, "L'Oréal") : pricing.registrationTypeName} ({pricing.baseAttendees}{' '}
             {pricing.baseAttendees === 1 ? 'person' : 'people'})
           </span>
           <span className="font-medium">{formatCurrency(pricing.base)}</span>
@@ -52,7 +60,7 @@ export function PriceSummary({ pricing, paymentMethod }: PriceSummaryProps) {
           <div className="border-t border-zinc-700 pt-3 mt-3">
             <div className="flex justify-between">
               <span className="text-zinc-300">Payment Method</span>
-              <span className="font-medium">{PAYMENT_METHOD_LABELS[paymentMethod]}</span>
+              <span className="font-medium">{paymentMethodLabels[paymentMethod]}</span>
             </div>
           </div>
         )}

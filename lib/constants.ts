@@ -106,6 +106,14 @@ export const US_STATES = [
 
 export type StateCode = (typeof US_STATES)[number]['value']
 
+export const CANADIAN_PROVINCE_CODES = new Set([
+  'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT',
+])
+
+export function isCanadianProvince(stateCode: string): boolean {
+  return CANADIAN_PROVINCE_CODES.has(stateCode)
+}
+
 // Grouped version for Select component with optgroup
 export const STATES_AND_PROVINCES_GROUPED = [
   {

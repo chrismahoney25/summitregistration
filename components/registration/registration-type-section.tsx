@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import { RegistrationFormData, RegistrationType } from '@/lib/types'
-import { ADDITIONAL_ATTENDEE_PRICE } from '@/lib/constants'
+import { ADDITIONAL_ATTENDEE_PRICE, isCanadianProvince } from '@/lib/constants'
 import { formatCurrency, cn } from '@/lib/utils'
 
 interface AttendeeOption {
@@ -23,6 +23,8 @@ export function RegistrationTypeSection() {
   const isAlumni = watch('isAlumni')
   const isLevelMember = watch('isLevelMember')
   const totalAttendees = watch('totalAttendees')
+  const state = watch('state')
+  const isCanadian = isCanadianProvince(state || '')
 
   // Calculate attendee options with pricing
   const attendeeOptions = useMemo((): AttendeeOption[] => {
@@ -156,7 +158,9 @@ export function RegistrationTypeSection() {
           render={({ field, fieldState: { error } }) => (
             <div className="space-y-3" data-field="isLevelMember">
               <p className="text-sm font-medium text-zinc-700">
-                Are you a LEVEL Loyalty member?
+                {isCanadian
+                  ? 'Are you a member of a L\'Oréal loyalty program (Redken C5A, L\'Oréal Excellence, Club Matrix)?'
+                  : 'Are you a LEVEL Loyalty member?'}
               </p>
               <div className="flex gap-3">
                 <button
