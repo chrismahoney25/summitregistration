@@ -37,6 +37,7 @@ export function RegistrationForm() {
   const [showExpiredNotice, setShowExpiredNotice] = useState(false)
   const [isValidatingSummitParam, setIsValidatingSummitParam] = useState(false)
   const selectorRef = useRef<HTMLDivElement>(null)
+  const hasUserChangedSummit = useRef(false)
 
   const form = useForm({
     resolver: zodResolver(registrationSchema),
@@ -67,7 +68,7 @@ export function RegistrationForm() {
   const selectedSummit = summits.find((s) => s.id === selectedSummitId)
 
   useEffect(() => {
-    if (summitParam && summits.length > 0 && !selectedSummitId && !isValidatingSummitParam) {
+    if (summitParam && summits.length > 0 && !selectedSummitId && !isValidatingSummitParam && !hasUserChangedSummit.current) {
       const matchingSummit = summits.find((s) => s.id === summitParam)
 
       if (matchingSummit) {
@@ -388,6 +389,7 @@ export function RegistrationForm() {
                 <SummitCard
                   summit={selectedSummit}
                   onChangeClick={() => {
+                    hasUserChangedSummit.current = true
                     form.setValue('summitId', '')
                     setShowSummitSelector(true)
                   }}
