@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
     const formData = {
       fields: [
         { name: 'summit_registration_summit_name', value: body.summitName || '' },
+        { name: 'summit_registration_summit_date', value: body.summitDate || '' },
         { name: 'summit_registration_salon_name', value: validatedData.salonName },
         { name: 'summit_registration_salon_city', value: validatedData.city },
         { name: 'summit_registration_salon_state', value: validatedData.state },

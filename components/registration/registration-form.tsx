@@ -276,6 +276,7 @@ export function RegistrationForm() {
         body: JSON.stringify({
           ...data,
           summitName,
+          summitDate: selectedSummit?.startDate || '',
           totalPrice: pricing?.total,
         }),
       })
