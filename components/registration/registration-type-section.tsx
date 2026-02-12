@@ -38,7 +38,7 @@ export function RegistrationTypeSection() {
         options.push({ count: i, price, label: `${i} people — ${formatCurrency(price)}` })
       }
     } else if (isLevelMember) {
-      // Level Member: $1,450 base + $500 per additional person
+      // Level Member: $1,450 base + $600 per additional person
       for (let i = 1; i <= 10; i++) {
         const additionalCount = i - 1
         const price = 1450 + (additionalCount * ADDITIONAL_ATTENDEE_PRICE)

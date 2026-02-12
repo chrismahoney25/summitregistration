@@ -31,7 +31,7 @@ export const REGISTRATION_TYPES: RegistrationTypeOption[] = [
   },
 ]
 
-export const ADDITIONAL_ATTENDEE_PRICE = 500
+export const ADDITIONAL_ATTENDEE_PRICE = 600
 export const MAX_ADDITIONAL_ATTENDEES = 10
 
 export const US_STATES = [
