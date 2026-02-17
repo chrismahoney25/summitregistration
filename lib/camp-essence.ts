@@ -11,8 +11,8 @@ export const CAMP_ESSENCE_MAX_ATTENDEES = 6
 
 export const CAMP_ESSENCE_PAYMENT_METHODS = [
   'credit_card',
-  'loyalty_points',
-  'credit_card_payment_plan',
+  'level',
+  'payment_plan',
 ] as const
 
 export type CampEssencePaymentMethod =
@@ -29,12 +29,12 @@ export const CAMP_ESSENCE_PAYMENT_OPTIONS: Array<{
     description: "We'll send you a secure payment link.",
   },
   {
-    id: 'loyalty_points',
+    id: 'level',
     label: 'Loyalty Points',
     description: 'Apply eligible loyalty points toward your registration.',
   },
   {
-    id: 'credit_card_payment_plan',
+    id: 'payment_plan',
     label: 'Credit Card Payment Plan',
     description: 'Split payment across installments on a credit card.',
   },

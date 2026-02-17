@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     // Map payment method to HubSpot values
     const paymentMethodMap: Record<string, string> = {
       credit: 'credit_card',
+      // HubSpot Summit payment option internal value is "level".
       loyalty: 'level',
       combo: 'combo',
     }
@@ -49,6 +50,7 @@ export async function POST(request: NextRequest) {
         { name: 'firstname', value: validatedData.primaryAttendee.firstName },
         { name: 'lastname', value: validatedData.primaryAttendee.lastName },
         { name: 'email', value: validatedData.primaryAttendee.email },
+        { name: 'mobilephone', value: validatedData.primaryAttendee.phone },
         { name: 'summit_registration_additional_attendees', value: additionalAttendeesStr },
         { name: 'summit_registration_payment_method', value: validatedData.paymentMethod ? (paymentMethodMap[validatedData.paymentMethod] || validatedData.paymentMethod) : '' },
         { name: 'summit_registration_total_amount', value: String(body.totalPrice || 0) },

@@ -64,6 +64,7 @@ export function CampRegistrationForm() {
         firstName: '',
         lastName: '',
         email: '',
+        phone: '',
       },
       totalAttendees: 1,
       additionalAttendees: [],

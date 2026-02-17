@@ -46,6 +46,10 @@ const primaryAttendeeSchema = z.object({
     .min(1, 'Email is required')
     .email('Please enter a valid email address')
     .max(254, 'Email is too long'),
+  phone: z
+    .string()
+    .min(1, 'Mobile phone is required')
+    .refine(isValidUsCaPhone, 'Please enter a valid US/CA mobile phone number'),
 })
 
 export const campRegistrationSchema = z

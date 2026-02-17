@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
         { name: 'firstname', value: validatedData.primaryAttendee.firstName },
         { name: 'lastname', value: validatedData.primaryAttendee.lastName },
         { name: 'email', value: validatedData.primaryAttendee.email },
+        { name: 'mobilephone', value: validatedData.primaryAttendee.phone },
       ],
       context: {
         ...(hubspotutk && { hutk: hubspotutk }),

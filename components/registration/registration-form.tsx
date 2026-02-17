@@ -47,7 +47,7 @@ export function RegistrationForm() {
       salonName: '',
       city: '',
       state: '',
-      primaryAttendee: { firstName: '', lastName: '', email: '' },
+      primaryAttendee: { firstName: '', lastName: '', email: '', phone: '' },
       registrationType: undefined,
       additionalAttendeeCount: 0,
       additionalAttendees: [],
@@ -139,6 +139,7 @@ export function RegistrationForm() {
     'primaryAttendee.firstName',
     'primaryAttendee.lastName',
     'primaryAttendee.email',
+    'primaryAttendee.phone',
     'additionalAttendees',
     'paymentMethod',
   ]
@@ -305,6 +306,7 @@ export function RegistrationForm() {
     'primaryAttendee.firstName',
     'primaryAttendee.lastName',
     'primaryAttendee.email',
+    'primaryAttendee.phone',
     'additionalAttendees',
   ]
 

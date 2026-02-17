@@ -3,6 +3,15 @@ import { US_STATES } from './constants'
 
 const stateValues = US_STATES.map((s) => s.value) as [string, ...string[]]
 
+function isValidUsCaPhone(value: string): boolean {
+  const trimmed = value.trim()
+  if (!trimmed) return false
+  if (!/^[+()\-\s.\d]+$/.test(trimmed)) return false
+
+  const digits = trimmed.replace(/\D/g, '')
+  return digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))
+}
+
 const attendeeSchema = z.object({
   fullName: z
     .string()
@@ -24,6 +33,10 @@ const primaryAttendeeSchema = z.object({
     .min(1, 'Email is required')
     .email('Please enter a valid email address')
     .max(254, 'Email is too long'),
+  phone: z
+    .string()
+    .min(1, 'Mobile phone is required')
+    .refine(isValidUsCaPhone, 'Please enter a valid US/CA mobile phone number'),
 })
 
 export const registrationSchema = z

@@ -12,6 +12,7 @@ export interface PrimaryAttendee {
   firstName: string
   lastName: string
   email: string
+  phone: string
 }
 
 export interface PriceCalculation {

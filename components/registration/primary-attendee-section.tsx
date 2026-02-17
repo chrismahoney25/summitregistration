@@ -35,6 +35,13 @@ export function PrimaryAttendeeSection() {
           error={errors.primaryAttendee?.email?.message}
           {...register('primaryAttendee.email')}
         />
+        <Input
+          label="Mobile Phone"
+          type="tel"
+          placeholder="(555) 555-5555"
+          error={errors.primaryAttendee?.phone?.message}
+          {...register('primaryAttendee.phone')}
+        />
       </div>
     </div>
   )
