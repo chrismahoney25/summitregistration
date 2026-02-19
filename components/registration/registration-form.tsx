@@ -68,6 +68,15 @@ export function RegistrationForm() {
   const pricing = usePriceCalculation(registrationType, additionalCount ?? 0)
   const selectedSummit = summits.find((s) => s.id === selectedSummitId)
 
+  // Sync additionalAttendees array when count decreases (prevents stale data from unmounted child)
+  useEffect(() => {
+    const currentAttendees = form.getValues('additionalAttendees') || []
+    const targetCount = additionalCount ?? 0
+    if (currentAttendees.length > targetCount) {
+      form.setValue('additionalAttendees', currentAttendees.slice(0, targetCount))
+    }
+  }, [additionalCount, form])
+
   useEffect(() => {
     if (summitParam && summits.length > 0 && !selectedSummitId && !isValidatingSummitParam && !hasUserChangedSummit.current) {
       const matchingSummit = summits.find((s) => s.id === summitParam)
